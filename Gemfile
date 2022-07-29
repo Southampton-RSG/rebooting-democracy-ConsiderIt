@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 #############
 # CORE
+gem 'tzinfo-data'
 gem 'rails', '~>5.2'
 gem 'activerecord-session_store'  # Because CookieStore has race conditions w/ concurrent ajax requests
 
@@ -21,12 +22,13 @@ gem "mysql2"
 gem 'acts_as_tenant'
 gem 'activerecord-import' # bulk imports for performance
                           # Used for Opinion.import. Remove after eliminating the 
-                          # need to create an unpublished opinion per proposal per user 
+                          # need to create an unpublished opinion per proposal per user
 
 #############
 # VIEWS / FORMS / CLIENT
 gem "haml"
 gem 'kt-paperclip'
+gem 'rails-html-sanitizer'
 
 #############
 # BACKGROUND PROCESSING / EMAIL
