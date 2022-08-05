@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   web:
+    container_name: considerit
     build: .
     ports:
       - "3001:3001"

@@ -1,5 +1,6 @@
 FROM ubuntu:22.04
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && apt-get -y upgrade && \
     apt-get -y install advancecomp autoconf automake bison build-essential \
        curl exuberant-ctags gifsicle git-core imagemagick \
@@ -11,12 +12,12 @@ RUN apt-get update && apt-get -y upgrade && \
        unzip zlib1g zlib1g-dev libsqlite3-dev
 
 RUN git clone https://github.com/sstephenson/rbenv.git ~/.rbenv && \
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile && \
-    echo 'eval "$(rbenv init -)"' >> ~/.bash_profile && \
-    git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build && \
-    echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bash_profile && \
-    . ~/.bash_profile
-RUN rbenv install -v 2.7.0 && rbenv global 2.7.0 && \
+    git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+ENV PATH $PATH:/root/.rbenv/bin:/root/.rbenv/plugins/ruby-build/bin:/root/.rbenv/shims
+ENV RBENV_SHELL bash
+
+RUN rbenv init - && rbenv install -v 2.7.0 && rbenv global 2.7.0 && \
     gem update --system && gem install bundler --no-document
 
 RUN service mysql restart && mysqladmin -u root password root && \
@@ -29,8 +30,11 @@ RUN cp config/dev_database.yml config/database.yml && \
     rm Gemfile.lock && \
     gem install rails && \
     bundle install && \
-    npm install && \
-    rake db:schema:load && \
-    rake db:migrate \
+    npm install
 
-CMD bin/webpack & && bin/delayed_job restart && rails s -p 3000 -b 0.0.0.0
+RUN service mysql restart && \
+    rake db:schema:load && \
+    rake db:migrate && \
+    bin/delayed_job restart
+
+CMD bash /app/docker_start.sh
