@@ -5,14 +5,12 @@ class HtmlController < ApplicationController
 
   def index
 
-    if Rails.env.development?
-      if params[:domain]
-        candidate_subdomain = Subdomain.find_by_name(params[:domain])
-        if candidate_subdomain && session[:default_subdomain] != params[:domain]
-          session[:default_subdomain] = candidate_subdomain.name
-          redirect_to request.fullpath 
-          return
-        end
+    if Rails.env.development? && params[:domain]
+      candidate_subdomain = Subdomain.find_by_name(params[:domain])
+      if candidate_subdomain && session[:default_subdomain] != params[:domain]
+        session[:default_subdomain] = candidate_subdomain.name
+        redirect_to request.fullpath 
+        return
       end
     end
 
@@ -164,6 +162,11 @@ class HtmlController < ApplicationController
       description = "Tell us how you think Mozilla’s Internet Health Report should document and explain the Internet from year to year."
       keywords = "Internet health, Internet, Mozilla, Internet research, privacy, decentralization, digital inclusion, Web literacy, digital divide, digital rights"
       @favicon = '/images/internethealthreport/favicon.png'
+
+    when 'seattlefoodactionplan'
+      title = "What do you think of the Seattle Food Action Plan?"
+      description = "We’re updating Seattle’s Food Action Plan and want to hear from you! Provide us your feedback now through August 26"
+      image = "#{request.protocol}#{view_context.asset_path('images/seattlefoodactionplan/socialmedia.png').gsub(/\/\//,'')}"
 
     else
       banner = current_subdomain.customization_json['banner'] || {}
