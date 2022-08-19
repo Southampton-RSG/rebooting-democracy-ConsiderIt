@@ -1,0 +1,7 @@
+development:
+  adapter: mysql2
+  database: considerit
+  username: considerit
+  password: considerit
+  host: considerit-db
+  encoding: utf8mb4

@@ -1,7 +1,20 @@
 version: "3.9"
 services:
+  db:
+    container_name: considerit-db
+    image: mysql:8.0.30
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'considerit'
+      MYSQL_DATABASE: 'considerit'
+      MYSQL_USER: 'considerit'
+      MYSQL_PASSWORD: 'considerit'
+
   web:
-    container_name: considerit
+    container_name: considerit-web
     build: .
+    restart: on-failure
+    depends_on:
+      - db
     ports:
-      - "3001:3001"
+      - 3001:80
